@@ -1,0 +1,56 @@
+{
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "author": {
+          "type": "text"
+        },
+        "genre": {
+          "type": "keyword"
+        },
+        "width_image": {
+          "type": "integer"
+        },
+        "height_image": {
+          "type": "integer"
+        },
+        "image": {
+          "type": "keyword",
+          "index": "false"
+        },
+        "created_unix": {
+          "type": "long"
+        },
+        "price": {
+          "type": "integer"
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "refresh_interval": "30s",
+        "translog": {
+          "durability": "async"
+        },
+        "max_result_window": "1000",
+        "requests": {
+          "cache": {
+            "enable": "false"
+          }
+        },
+        "number_of_replicas": "0",
+        "queries": {
+          "cache": {
+            "enabled": "false"
+          }
+        },
+        "number_of_shards": "2"
+      }
+    }
+  }

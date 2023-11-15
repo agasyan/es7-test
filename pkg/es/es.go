@@ -189,13 +189,16 @@ func ConstructGenreQuery(t string) interface{} {
 }
 
 func (ec *ESClient) Query(ctx context.Context, q []interface{}, size int) ([]docgen.Document, error) {
-	boolQuery := map[string]interface{}{
-		"bool": map[string]interface{}{
-			"must": q,
+	cq := map[string]interface{}{
+		"query": map[string]interface{}{
+			"bool": map[string]interface{}{
+				"must": q,
+			},
 		},
 	}
+
 	// Serialize the combined query to JSON
-	combinedJSON, err := json.Marshal(boolQuery)
+	combinedJSON, err := json.Marshal(cq)
 	if err != nil {
 		return []docgen.Document{}, err
 	}
@@ -230,8 +233,9 @@ func (ec *ESClient) Query(ctx context.Context, q []interface{}, size int) ([]doc
 				Genre:       source["genre"].(string),
 				WidthImage:  int(source["width_image"].(float64)),
 				HeightImage: int(source["height_image"].(float64)),
-				ImageURL:    source["image_url"].(string),
+				ImageURL:    source["image"].(string),
 				CreatedUnix: int64(source["created_unix"].(float64)),
+				Price:       int(source["price"].(float64)),
 			}
 			documents = append(documents, document)
 		}

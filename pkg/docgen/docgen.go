@@ -1,6 +1,7 @@
 package docgen
 
 import (
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"math"
@@ -36,7 +37,7 @@ func (d *Docgen) generate() Document {
 	cAt := gofakeit.DateRange(time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC), time.Now())
 	return Document{
 		ID:          id,
-		Title:       fmt.Sprintf("%s %s", gofakeit.BookTitle(), generateRandomString(15)),
+		Title:       fmt.Sprintf("%s %s", gofakeit.BookTitle(), generateRandomString(16)),
 		Author:      fmt.Sprintf("%s %s", gofakeit.FirstName(), gofakeit.LastName()),
 		Genre:       gofakeit.BookGenre(),
 		WidthImage:  wImg,
@@ -62,29 +63,25 @@ func (d *Docgen) UpdateArr() {
 	for k := range d.mapID {
 		arr = append(d.arr, k)
 	}
-	d.mutex.Lock()
 	d.arr = arr
-	d.mutex.Unlock()
 }
 
 func (d *Docgen) GetExistKey(action string) int {
+	d.mutex.Lock()
 	if len(d.arr) == 0 {
 		return 0
 	}
-	i := gofakeit.IntRange(0, len(d.arr))
+	i := gofakeit.IntRange(0, len(d.arr)-1)
 
-	d.mutex.Lock()
 	val := d.arr[i]
-	d.mutex.Unlock()
 
 	if action == "DELETE" {
-		d.mutex.Lock()
 		delete(d.mapID, val)
-		d.mutex.Unlock()
 		d.UpdateArr()
 	}
+	d.mutex.Unlock()
 
-	return d.arr[i]
+	return val
 }
 
 type Docgen struct {
@@ -104,5 +101,9 @@ func Init() *Docgen {
 
 func generateRandomString(length int) string {
 	bytes := make([]byte, length/2)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return ""
+	}
 	return hex.EncodeToString(bytes)[:length]
 }

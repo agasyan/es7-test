@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/agasyan/es7-test/pkg/docgen"
@@ -66,6 +67,9 @@ func (h *IndexerHandler) HandleMessage(msg *nsq.Message) error {
 		err = h.es.Update(ctx, message.Doc)
 	case ActionDelete:
 		err = h.es.Delete(ctx, message.Doc)
+	}
+	if strings.Contains(strings.ToLower(err.Error()), "not found") {
+		err = nil
 	}
 	if err != nil {
 		log.Println("Error es doc:", err)

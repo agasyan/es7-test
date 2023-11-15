@@ -94,7 +94,6 @@ func main() {
 	// New Consumer
 	for kNSQ, vNSQ := range config.NSQConfig {
 
-		var keyES string
 		var esc *es.ESClient
 		switch kNSQ {
 		case consVM:
@@ -103,7 +102,7 @@ func main() {
 			esc = esm[esKube]
 		}
 
-		if keyES != "" && esc != nil {
+		if esc != nil {
 			ih, err := indexconsumer.NewIndexerHandler(
 				m,
 				esc,

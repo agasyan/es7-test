@@ -47,6 +47,7 @@ nsq:
   publish_topic: "doc_index"
 ```
 
+fetchhandler
 ```
 server:
   port: 8082
@@ -65,4 +66,21 @@ es:
 handler:
   vm: 
     timeout_ms: 1000
+```
+
+sample curl:
+```
+curl --request GET \
+  --url 'http://localhost:8082/get/vm?title=brothers' \
+  --header 'User-Agent: insomnium/0.2.3-a'
+```
+
+indexhandler
+```
+curl --request POST \
+  --url http://localhost:8080/random-action-es \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"count": 5
+}'
 ```

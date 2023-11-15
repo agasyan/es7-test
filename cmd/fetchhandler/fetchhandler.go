@@ -46,7 +46,7 @@ type esConfig struct {
 }
 
 type handlerConfig struct {
-	timeoutMS int `yaml:"timeout_ms"`
+	TimeoutMS int `yaml:"timeout_ms"`
 }
 
 func main() {
@@ -87,7 +87,11 @@ func main() {
 	var hArr []string
 	for k, v := range esm {
 		if value, ok := config.H[k]; ok {
-			h, err := fetchhandler.NewFetchHandler(v, m, k, time.Duration(value.timeoutMS)*time.Millisecond)
+			h, err := fetchhandler.NewFetchHandler(
+				v,
+				m,
+				k,
+				time.Duration(value.TimeoutMS)*time.Millisecond)
 			if err != nil {
 				log.Fatalf("Error create handler service: %v", err)
 			}

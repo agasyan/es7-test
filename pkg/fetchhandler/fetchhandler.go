@@ -85,7 +85,7 @@ func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	if author != "" {
 		qArr = append(qArr, es.ConstructAuthorQuery(author))
 	}
-	size := 70
+	size := 10
 	szStr := queryParams.Get("size")
 	if szStr != "" {
 		szInt, _ := strconv.Atoi(szStr)

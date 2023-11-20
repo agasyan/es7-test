@@ -2,13 +2,18 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
-	"net/url"
 	"time"
 
 	"github.com/brianvoe/gofakeit/v6"
 	vegeta "github.com/tsenart/vegeta/lib"
 )
+
+// Define a struct that matches the JSON structure
+type myData struct {
+	Count int `json:"count"`
+}
 
 func NewCustomTargeter() vegeta.Targeter {
 	return func(tgt *vegeta.Target) error {
@@ -16,27 +21,22 @@ func NewCustomTargeter() vegeta.Targeter {
 			return vegeta.ErrNilTarget
 		}
 
-		tgt.Method = "GET"
+		data := myData{
+			Count: gofakeit.Number(5, 20),
+		}
+		jsonData, _ := json.Marshal(data)
 
-		baseURL := "http://localhost:8082/get/vm"
-
-		// Create a URL object
-		u, _ := url.Parse(baseURL)
-
-		// Add query parameters
-		q := u.Query()
-		q.Add("genre", gofakeit.BookGenre())
-		// Update the URL object with the new query parameters
-		u.RawQuery = q.Encode()
-		tgt.URL = u.String()
+		tgt.Method = "POST"
+		tgt.Body = jsonData
+		tgt.URL = "http://localhost:8080/random-action-es"
 
 		return nil
 	}
 }
 
 func main() {
-	rate := vegeta.Rate{Freq: 2, Per: 1 * time.Second}
-	duration := 3 * time.Second
+	rate := vegeta.Rate{Freq: 5, Per: 1 * time.Second}
+	duration := 300 * time.Second
 	targeter := NewCustomTargeter()
 	attacker := vegeta.NewAttacker()
 	var metrics vegeta.Metrics

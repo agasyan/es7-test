@@ -44,10 +44,12 @@ type nrConfig struct {
 
 // nsqConfig represents nsq configuration.
 type nsqConfig struct {
-	NSQDAddress  string `yaml:"nsqd_address"`
-	PublishTopic string `yaml:"publish_topic"`
-	ConsumerName string `yaml:"consumer_name"`
-	TimeoutMS    int    `yaml:"timeout_ms"`
+	NSQDAddress    string `yaml:"nsqd_address"`
+	PublishTopic   string `yaml:"publish_topic"`
+	ConsumerName   string `yaml:"consumer_name"`
+	TimeoutMS      int    `yaml:"timeout_ms"`
+	NumOfConsumers int    `yaml:"num_of_consumers"`
+	InFlight       int    `yaml:"in_flight"`
 }
 
 // esConfig represents es configuration.
@@ -110,6 +112,9 @@ func main() {
 				vNSQ.PublishTopic,
 				vNSQ.ConsumerName,
 				vNSQ.NSQDAddress,
+				kNSQ,
+				vNSQ.NumOfConsumers,
+				vNSQ.InFlight,
 			)
 			if err != nil {
 				log.Fatalf("Error creating consumer: %v", err)

@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
+	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/agasyan/es7-test/pkg/docgen"
 	es7 "github.com/elastic/go-elasticsearch/v7"
@@ -56,15 +57,6 @@ func (ec *ESClient) Index(ctx context.Context, document docgen.Document) error {
 		return fmt.Errorf("error indexing document: %s", res.String())
 	}
 
-	// Read the response body
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	// Print the response
-	fmt.Printf("Indexing Response for index %s, id %d: %s\n", ec.indexName, document.ID, body)
-
 	return nil
 }
 
@@ -95,15 +87,6 @@ func (ec *ESClient) Update(ctx context.Context, document docgen.Document) error 
 		return fmt.Errorf("error updating document: %s", res.String())
 	}
 
-	// Read the response body
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	// Print the response
-	fmt.Printf("Updating Response for index %s, id %d: %s\n", ec.indexName, document.ID, body)
-
 	return nil
 }
 
@@ -124,15 +107,6 @@ func (ec *ESClient) Delete(ctx context.Context, document docgen.Document) error 
 	if res.IsError() {
 		return fmt.Errorf("error deleting document: %s", res.String())
 	}
-
-	// Read the response body
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	// Print the response
-	fmt.Printf("Deleting Response for index %s, id %d: %s\n", ec.indexName, document.ID, body)
 
 	return nil
 }
@@ -186,6 +160,88 @@ func ConstructGenreQuery(t string) interface{} {
 		},
 	}
 	return q
+}
+
+func (ec *ESClient) ScrollDocID(ctx context.Context, size int) ([]int, error) {
+	query := map[string]interface{}{
+		"query": map[string]interface{}{
+			"match_all": map[string]interface{}{},
+		},
+	}
+
+	// Serialize the combined query to JSON
+	combinedJSON, err := json.Marshal(query)
+	if err != nil {
+		return []int{}, err
+	}
+
+	// Initial search request
+	searchResp, err := ec.client.Search(
+		ec.client.Search.WithIndex(ec.indexName),
+		ec.client.Search.WithBody(bytes.NewReader(combinedJSON)),
+		ec.client.Search.WithSize(size),
+		ec.client.Search.WithSource("false"),
+		ec.client.Search.WithScroll(time.Duration(1)*time.Minute),
+	)
+	if err != nil {
+		return []int{}, err
+	}
+	defer searchResp.Body.Close()
+
+	resArr := make([]int, 0)
+	var result map[string]interface{}
+	if err := json.NewDecoder(searchResp.Body).Decode(&result); err != nil {
+		return []int{}, err
+	}
+	hits, _ := result["hits"].(map[string]interface{})["hits"].([]interface{})
+	for _, hit := range hits {
+		source, _ := hit.(map[string]interface{})
+		docID, _ := source["_id"].(string)
+		docIDInt, errConv := strconv.Atoi(docID)
+		if errConv == nil {
+			resArr = append(resArr, docIDInt)
+		}
+
+	}
+
+	// Continue scrolling until there are no more results
+	for {
+		scrollResp, err := ec.client.Scroll(
+			ec.client.Scroll.WithScrollID(result["_scroll_id"].(string)),
+			ec.client.Scroll.WithScroll(time.Duration(1)*time.Minute), // Set the scroll duration
+		)
+		if err != nil {
+			return []int{}, err
+		}
+		defer scrollResp.Body.Close()
+
+		if scrollResp.IsError() {
+			return []int{}, fmt.Errorf("scroll request failed with status code: %d", scrollResp.StatusCode)
+		}
+
+		// Process the scroll results
+		if err := json.NewDecoder(scrollResp.Body).Decode(&result); err != nil {
+			log.Fatalf("Error decoding scroll result: %s", err)
+		}
+
+		// Extract document IDs from the scroll results
+		hits, _ := result["hits"].(map[string]interface{})["hits"].([]interface{})
+		for _, hit := range hits {
+			source, _ := hit.(map[string]interface{})
+			docID, _ := source["_id"].(string)
+			docIDInt, errConv := strconv.Atoi(docID)
+			if errConv == nil {
+				resArr = append(resArr, docIDInt)
+			}
+		}
+
+		// Check if there are more results
+		if len(hits) == 0 {
+			break
+		}
+	}
+
+	return resArr, nil
 }
 
 func (ec *ESClient) Query(ctx context.Context, q []interface{}, size int) ([]docgen.Document, error) {

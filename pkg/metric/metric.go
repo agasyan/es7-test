@@ -13,6 +13,7 @@ type Metric struct {
 	accID      string
 	env        string
 	eventType  string
+	client     *http.Client // Reuse HTTP client
 }
 
 const (
@@ -40,8 +41,7 @@ func (m *Metric) SentMetrics(mv map[string]interface{}) error {
 		return fmt.Errorf("err marshal json:%v", err)
 	}
 	req.Body = io.NopCloser(bytes.NewReader(jsonBytes))
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := m.client.Do(req)
 	if err != nil {
 		return fmt.Errorf("err do req:%v", err)
 	}
@@ -56,5 +56,6 @@ func NewMetric(accID, licenseKey, env, eventType string) (*Metric, error) {
 		licenseKey: licenseKey,
 		env:        env,
 		eventType:  eventType,
+		client:     &http.Client{},
 	}, nil
 }

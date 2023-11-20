@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
@@ -66,7 +65,7 @@ func (ph *PostHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 		action := indexconsumer.ActionIndex
 		randAct := gofakeit.RandomString([]string{indexconsumer.ActionIndex, indexconsumer.ActionUpdate, indexconsumer.ActionDelete})
 		// to minimize update delete
-		if (randAct == indexconsumer.ActionDelete || randAct == indexconsumer.ActionUpdate) && rand.Float64() > 0.6 {
+		if randAct == indexconsumer.ActionDelete || randAct == indexconsumer.ActionUpdate {
 			idToBeUpdated := ph.dg.GetExistKey(randAct)
 			if idToBeUpdated > 0 {
 				action = randAct

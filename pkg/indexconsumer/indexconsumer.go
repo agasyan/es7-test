@@ -3,8 +3,8 @@ package indexconsumer
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
-	"strconv"
 	"strings"
 	"time"
 
@@ -20,6 +20,7 @@ type IndexerHandler struct {
 	es      *es.ESClient
 	timeout time.Duration
 	C       *nsq.Consumer
+	name    string
 }
 
 type IndexerHandlerMSG struct {
@@ -37,12 +38,16 @@ const (
 func (h *IndexerHandler) HandleMessage(msg *nsq.Message) error {
 	// Process the received message.
 	var err error
+	var act string
+	found := true
 	defer func(startTime time.Time) {
 		if h.m != nil {
 			errSentMetrics := h.m.SentMetrics(map[string]interface{}{
-				"func":  "IndexerHandler.HandleMessage",
-				"took":  time.Since(startTime).Seconds(),
-				"isErr": strconv.FormatBool(err != nil),
+				"func":   fmt.Sprintf("IndexerHandler.HandleMessage_%v", h.name),
+				"took":   time.Since(startTime).Seconds(),
+				"isErr":  err != nil,
+				"action": act,
+				"found":  found,
 			})
 			if errSentMetrics != nil {
 				log.Printf("error sent metrics, err:%v", errSentMetrics)
@@ -57,6 +62,7 @@ func (h *IndexerHandler) HandleMessage(msg *nsq.Message) error {
 		msg.Finish()
 		return err
 	}
+	act = message.Action
 
 	ctx, cancel := context.WithTimeout(context.Background(), h.timeout)
 	defer cancel()
@@ -68,8 +74,9 @@ func (h *IndexerHandler) HandleMessage(msg *nsq.Message) error {
 	case ActionDelete:
 		err = h.es.Delete(ctx, message.Doc)
 	}
-	if strings.Contains(strings.ToLower(err.Error()), "not found") {
+	if err != nil && (strings.Contains(strings.ToLower(err.Error()), "not found") || strings.Contains(strings.ToLower(err.Error()), "conflict")) {
 		err = nil
+		found = false
 	}
 	if err != nil {
 		log.Println("Error es doc:", err)
@@ -81,8 +88,11 @@ func (h *IndexerHandler) HandleMessage(msg *nsq.Message) error {
 	return nil
 }
 
-func NewIndexerHandler(m *metric.Metric, esc *es.ESClient, timeout time.Duration, topicName, channelName, nsqd string) (*IndexerHandler, error) {
+func NewIndexerHandler(m *metric.Metric, esc *es.ESClient, timeout time.Duration, topicName, channelName, nsqd, keyNSQ string, numOfConsumer, maxInFlight int) (*IndexerHandler, error) {
 	config := nsq.NewConfig()
+	if maxInFlight > 0 {
+		config.MaxInFlight = maxInFlight
+	}
 	consumer, err := nsq.NewConsumer(topicName, channelName, config)
 	if err != nil {
 		log.Println("Error creating NSQ consumer:", err)
@@ -93,8 +103,9 @@ func NewIndexerHandler(m *metric.Metric, esc *es.ESClient, timeout time.Duration
 		es:      esc,
 		C:       consumer,
 		timeout: timeout,
+		name:    keyNSQ,
 	}
-	consumer.AddHandler(ih)
+	consumer.AddConcurrentHandlers(ih, numOfConsumer)
 	err = consumer.ConnectToNSQD(nsqd)
 	if err != nil {
 		log.Println("Error connecting to NSQD:", err)

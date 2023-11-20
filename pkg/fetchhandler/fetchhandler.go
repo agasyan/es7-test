@@ -62,7 +62,7 @@ func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	height_max, _ := strconv.Atoi(queryParams.Get("height_max"))
 	title := queryParams.Get("title")
 	genre := queryParams.Get("genre")
-	author := queryParams.Get("genre")
+	author := queryParams.Get("author")
 
 	var qArr []interface{}
 

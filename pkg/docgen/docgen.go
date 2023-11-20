@@ -60,10 +60,12 @@ func (d *Docgen) UpdateArr() {
 
 	arr := make([]int, 0)
 
+	d.mutex.Lock()
 	for k := range d.mapID {
 		arr = append(d.arr, k)
 	}
 	d.arr = arr
+	d.mutex.Unlock()
 }
 
 func (d *Docgen) GetExistKey(action string) int {
@@ -72,14 +74,16 @@ func (d *Docgen) GetExistKey(action string) int {
 		return 0
 	}
 	i := gofakeit.IntRange(0, len(d.arr)-1)
-
 	val := d.arr[i]
+	d.mutex.Unlock()
 
 	if action == "DELETE" {
+		d.mutex.Lock()
 		delete(d.mapID, val)
+		d.mutex.Unlock()
+
 		d.UpdateArr()
 	}
-	d.mutex.Unlock()
 
 	return val
 }
@@ -97,6 +101,17 @@ func Init() *Docgen {
 		mutex: &sync.Mutex{},
 		arr:   make([]int, 0),
 	}
+}
+
+func (d *Docgen) InitMapArr(ids []int) {
+	mapID := make(map[int]bool, len(ids))
+	for _, id := range ids {
+		mapID[id] = true
+	}
+	d.mutex.Lock()
+	d.mapID = mapID
+	d.arr = ids
+	d.mutex.Unlock()
 }
 
 func generateRandomString(length int) string {

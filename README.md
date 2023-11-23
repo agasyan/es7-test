@@ -19,7 +19,10 @@ nr: <CAN BE OMITTED>
 
 es:
   vm: 
-    host: "http://localhost:9200"
+    host: "http://localhost:9210"
+    index_name: "book"
+  kube: 
+    host: "http://localhost:9210"
     index_name: "book"
 
 nsq:
@@ -28,8 +31,15 @@ nsq:
     publish_topic: "doc_index"
     consumer_name: "indexer_book_vm"
     timeout_ms: 1000
-    num_of_consumers: 10
-    in_flight: 10
+    num_of_consumers: 50
+    in_flight: 50
+  ckube: 
+    nsqd_address: "localhost:4150"
+    publish_topic: "doc_index"
+    consumer_name: "indexer_book_kube"
+    timeout_ms: 1000
+    num_of_consumers: 50
+    in_flight: 50
 ```
 
 
@@ -50,7 +60,10 @@ nsq:
 
 es:
   vm: 
-    host: "http://localhost:9200"
+    host: "http://localhost:9210"
+    index_name: "book"
+  kube: 
+    host: "http://localhost:9210"
     index_name: "book"
 ```
 
@@ -67,9 +80,11 @@ nr: <CAN BE OMITTED>
 
 es:
   vm: 
-    host: "http://localhost:9200"
+    host: "http://localhost:9210"
     index_name: "book"
-
+  kube: 
+    host: "http://localhost:9210"
+    index_name: "book"
 handler:
   vm: 
     timeout_ms: 1000
@@ -116,8 +131,28 @@ git clone https://github.com/zalando-incubator/es-operator.git
 cd es-operator
 ```
 
-2. create namespace
-```
-kubectl create namespace es-operator
-```
+# Useful command 
 
+## minikube
+
+| Command                                           | Description                                                       |
+| ------------------------------------------------- | ----------------------------------------------------------------- |
+| `minikube start` | starting minikube |
+| `minikube stop` | stop minikube pods|
+
+
+## kubectl
+
+| Command                                           | Description                                                       |
+| ------------------------------------------------- | ----------------------------------------------------------------- |
+| `kubectl port-forward es-master-0 9200:9200 -n es-operator-demo` | forward minikube |
+| `kubectl -n es-operator-demo get pods` | check pods|
+| `kubectl apply -f docs/elasticsearchdataset-simple.yaml` | apply yaml|
+| `kubectl get deployments -n es-operator-demo` | check deployments|
+| `kubectl -n es-operator-demo logs es-data-simple-0 -c elasticsearch` | check logs |
+| `kubectl get services --all-namespaces` | check all services |
+| `kubectl describe service es-http -n es-operator-demo` | describe service |
+| `kubectl scale statefulset/es-data-simple --replicas=2 -n es-operator-demo` | scale
+
+
+https://onenr.io/08jqZkP3xQl

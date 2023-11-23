@@ -3,12 +3,22 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net/url"
 	"sync"
 	"time"
 
 	"github.com/brianvoe/gofakeit/v6"
 	vegeta "github.com/tsenart/vegeta/lib"
+)
+
+var (
+	i      = 0
+	j      = 0
+	mutexI = &sync.Mutex{}
+	mutexJ = &sync.Mutex{}
+	a1     []string
+	a2     []string
 )
 
 func NewCustomTargeter(baseURL string) vegeta.Targeter {
@@ -18,21 +28,53 @@ func NewCustomTargeter(baseURL string) vegeta.Targeter {
 		}
 
 		tgt.Method = "GET"
-		tgt.URL = baseURL
+		mutexI.Lock()
+		tgt.URL = a1[i]
+		i++
+		mutexI.Unlock()
 
-		// Create a URL object
-		u, _ := url.Parse(baseURL)
+		return nil
+	}
+}
 
-		// Add query parameters
-		q := u.Query()
+func NewCustomTargeter2(baseURL string) vegeta.Targeter {
+	return func(tgt *vegeta.Target) error {
+		if tgt == nil {
+			return vegeta.ErrNilTarget
+		}
+
+		tgt.Method = "GET"
+
+		mutexJ.Lock()
+		tgt.URL = a2[j]
+		j++
+		mutexJ.Unlock()
+
+		return nil
+	}
+}
+
+func generateRandomUrlArr(count int, baseURL1 string, baseURL2 string) ([]string, []string) {
+	arrUrls1 := make([]string, 0, count)
+	arrUrls2 := make([]string, 0, count)
+	for i := 0; i < count; i++ {
 		randQ := gofakeit.RandomString([]string{"genre", "title", "author", "width", "height"})
+		// Create a URL object
+		u1, _ := url.Parse(baseURL1)
+		// Create a URL object
+		u2, _ := url.Parse(baseURL2)
+
+		q := u1.Query()
 		switch randQ {
 		case "genre":
-			q.Add("genre", gofakeit.BookGenre())
+			g := gofakeit.BookGenre()
+			q.Add("genre", g)
 		case "title":
-			q.Add("title", gofakeit.BookTitle())
+			bt := gofakeit.BookTitle()
+			q.Add("title", bt)
 		case "author":
-			q.Add("author", gofakeit.FirstName())
+			a := gofakeit.FirstName()
+			q.Add("author", a)
 		case "width":
 			w_min := gofakeit.Number(200, 600)
 			w_max := gofakeit.Number(600, 2000)
@@ -45,15 +87,17 @@ func NewCustomTargeter(baseURL string) vegeta.Targeter {
 			q.Add("height_max", fmt.Sprint(max))
 		}
 
-		size := gofakeit.Number(50, 70)
+		size := gofakeit.Number(20, 70)
 		q.Add("size", fmt.Sprint(size))
 
-		// Update the URL object with the new query parameters
-		u.RawQuery = q.Encode()
-		tgt.URL = u.String()
+		u1.RawQuery = q.Encode()
+		u2.RawQuery = q.Encode()
 
-		return nil
+		arrUrls1 = append(arrUrls1, u1.String())
+		arrUrls2 = append(arrUrls2, u2.String())
 	}
+
+	return arrUrls1, arrUrls2
 }
 
 func runAttack(targeter vegeta.Targeter, rate vegeta.Rate, duration time.Duration, name string, wg *sync.WaitGroup) {
@@ -79,23 +123,32 @@ func runAttack(targeter vegeta.Targeter, rate vegeta.Rate, duration time.Duratio
 }
 
 func main() {
-	rate := vegeta.Rate{Freq: 5, Per: 1 * time.Second}
-	duration := 120 * time.Second
+	f := 10
+	timeSec := 1
+	durSec := 300
+	rate := vegeta.Rate{Freq: f, Per: time.Duration(timeSec) * time.Second}
+	duration := time.Duration(durSec) * time.Second
 
 	// Define your old and new URLs
-	oldURL := "http://localhost:8082/get/vm"
-	newURL := "http://localhost:8082/get/vm"
+	u1 := "http://localhost:8082/get/vm"
+	u2 := "http://localhost:8082/get/kube"
+
+	log.Println("generating random url")
+	a1, a2 = generateRandomUrlArr((f * timeSec * durSec), u1, u2)
+	log.Printf("done generating random url len :%v ", len(a1))
 
 	// Create wait group to wait for both attacks to finish
 	var wg sync.WaitGroup
 	wg.Add(2)
 
 	// Run attack for the old URL concurrently
-	go runAttack(NewCustomTargeter(oldURL), rate, duration, "Old URL", &wg)
+	go runAttack(NewCustomTargeter(u1), rate, duration, "URL 1 [VM]", &wg)
 
 	// Run attack for the new URL concurrently
-	go runAttack(NewCustomTargeter(newURL), rate, duration, "New URL", &wg)
+	go runAttack(NewCustomTargeter2(u2), rate, duration, "URL 2 [KUBE]", &wg)
 
 	// Wait for both attacks to finish
 	wg.Wait()
+
+	log.Println("done attack")
 }

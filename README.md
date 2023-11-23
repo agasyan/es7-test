@@ -153,6 +153,7 @@ cd es-operator
 | `kubectl get services --all-namespaces` | check all services |
 | `kubectl describe service es-http -n es-operator-demo` | describe service |
 | `kubectl scale statefulset/es-data-simple --replicas=2 -n es-operator-demo` | scale
+| `kubectl apply -f docs/elasticsearchdataset-simple.yaml` | apply downscale or upscale
 
 
 https://onenr.io/08jqZkP3xQl

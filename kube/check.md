@@ -1,0 +1,1 @@
+https://github.com/zalando-incubator/es-operator/

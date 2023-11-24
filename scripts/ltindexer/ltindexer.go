@@ -35,7 +35,8 @@ func NewCustomTargeter() vegeta.Targeter {
 }
 
 func main() {
-	rate := vegeta.Rate{Freq: 20, Per: 1 * time.Second}
+	// lt 40 bau 20
+	rate := vegeta.Rate{Freq: 40, Per: 1 * time.Second}
 	duration := 600 * time.Second
 	targeter := NewCustomTargeter()
 	attacker := vegeta.NewAttacker()

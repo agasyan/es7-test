@@ -42,16 +42,13 @@ func (h *IndexerHandler) HandleMessage(msg *nsq.Message) error {
 	found := true
 	defer func(startTime time.Time) {
 		if h.m != nil {
-			errSentMetrics := h.m.SentMetrics(map[string]interface{}{
+			h.m.SentMetrics(map[string]interface{}{
 				"func":   fmt.Sprintf("IndexerHandler.HandleMessage_%v", h.name),
 				"took":   time.Since(startTime).Seconds(),
 				"isErr":  err != nil,
 				"action": act,
 				"found":  found,
 			})
-			if errSentMetrics != nil {
-				log.Printf("error sent metrics, err:%v", errSentMetrics)
-			}
 		}
 	}(time.Now())
 

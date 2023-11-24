@@ -22,7 +22,7 @@ func NewCustomTargeter() vegeta.Targeter {
 		}
 
 		data := myData{
-			Count: gofakeit.Number(5, 20),
+			Count: gofakeit.Number(1, 5),
 		}
 		jsonData, _ := json.Marshal(data)
 
@@ -35,8 +35,8 @@ func NewCustomTargeter() vegeta.Targeter {
 }
 
 func main() {
-	rate := vegeta.Rate{Freq: 2, Per: 1 * time.Second}
-	duration := 300 * time.Second
+	rate := vegeta.Rate{Freq: 20, Per: 1 * time.Second}
+	duration := 600 * time.Second
 	targeter := NewCustomTargeter()
 	attacker := vegeta.NewAttacker()
 	var metrics vegeta.Metrics

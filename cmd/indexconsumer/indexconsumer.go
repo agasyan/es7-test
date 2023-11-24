@@ -38,8 +38,10 @@ type serverConfig struct {
 
 // nrConfig represents metric configuration.
 type nrConfig struct {
-	AccID      string `yaml:"acc_id"`
-	LicenseKey string `yaml:"license_key"`
+	AccID        string `yaml:"acc_id"`
+	LicenseKey   string `yaml:"license_key"`
+	BufferSize   int    `yaml:"buffer_size"`
+	BufferTimeMS int    `yaml:"buffer_time_ms"`
 }
 
 // nsqConfig represents nsq configuration.
@@ -75,7 +77,7 @@ func main() {
 	// New Metric
 	var m *metric.Metric
 	if config.NR.AccID != "" && config.NR.LicenseKey != "" {
-		m, err = metric.NewMetric(config.NR.AccID, config.NR.LicenseKey, config.Server.Env, config.Server.AppName)
+		m, err = metric.NewMetric(config.NR.AccID, config.NR.LicenseKey, config.Server.Env, config.Server.AppName, time.Duration(config.NR.BufferTimeMS)*time.Millisecond, config.NR.BufferSize)
 		if err != nil {
 			log.Fatalf("Error create metric service: %v", err)
 		}

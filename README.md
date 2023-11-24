@@ -16,6 +16,8 @@ server:
 nr: <CAN BE OMITTED>
   license_key: <<FILL>>
   acc_id: <<FILL>>
+  buffer_time_ms: 250
+  buffer_size: 100
 
 es:
   vm: 
@@ -53,6 +55,8 @@ server:
 nr: <CAN BE OMITTED>
   license_key: <<FILL>>
   acc_id: <<FILL>>
+  buffer_time_ms: 250
+  buffer_size: 100
 
 nsq:
   nsqd_address: "localhost:4150"
@@ -77,6 +81,8 @@ server:
 nr: <CAN BE OMITTED>
   license_key: <<FILL>>
   acc_id: <<FILL>>
+  buffer_time_ms: 250
+  buffer_size: 100
 
 es:
   vm: 
@@ -105,6 +111,20 @@ curl --request POST \
   --data '{
 	"count": 5
 }'
+```
+
+### Running
+
+Docker
+```
+sudo sysctl -w vm.max_map_count=262144
+docker-compose up
+```
+
+Minikube
+```
+minikube start
+kubectl port-forward es-master-0 9200:9200 -n es-operator-demo
 ```
 
 # Install
@@ -153,7 +173,6 @@ cd es-operator
 | `kubectl get services --all-namespaces` | check all services |
 | `kubectl describe service es-http -n es-operator-demo` | describe service |
 | `kubectl scale statefulset/es-data-simple --replicas=2 -n es-operator-demo` | scale
-| `kubectl apply -f docs/elasticsearchdataset-simple.yaml` | apply downscale or upscale
 
 
 https://onenr.io/08jqZkP3xQl

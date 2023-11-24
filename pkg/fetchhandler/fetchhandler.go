@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -41,14 +40,11 @@ func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	var err error
 	defer func(startTime time.Time) {
 		if ph.metric != nil {
-			errSentMetrics := ph.metric.SentMetrics(map[string]interface{}{
+			ph.metric.SentMetrics(map[string]interface{}{
 				"func":  fmt.Sprintf("FetchHandler.HandleRequest_%v", ph.name),
 				"took":  time.Since(startTime).Seconds(),
 				"isErr": strconv.FormatBool(err != nil),
 			})
-			if errSentMetrics != nil {
-				log.Printf("error sent metrics, err:%v", errSentMetrics)
-			}
 		}
 	}(time.Now())
 

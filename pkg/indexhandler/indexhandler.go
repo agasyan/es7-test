@@ -31,14 +31,11 @@ func (ph *PostHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	var err error
 	defer func(startTime time.Time) {
 		if ph.metric != nil {
-			errSentMetrics := ph.metric.SentMetrics(map[string]interface{}{
+			ph.metric.SentMetrics(map[string]interface{}{
 				"func":  "PostHandler.HandleRequest",
 				"took":  time.Since(startTime).Seconds(),
 				"isErr": strconv.FormatBool(err != nil),
 			})
-			if errSentMetrics != nil {
-				log.Printf("error sent metrics, err:%v", errSentMetrics)
-			}
 		}
 	}(time.Now())
 
@@ -55,9 +52,6 @@ func (ph *PostHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "error reading request body", http.StatusInternalServerError)
 		return
 	}
-
-	// Print the received data (you can process it as needed)
-	fmt.Printf("Received POST request with body: %v\n", pr)
 
 	docs := ph.dg.BulkGenerate(pr.Count)
 	var messageBodies [][]byte

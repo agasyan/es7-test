@@ -37,13 +37,17 @@ type resp struct {
 // HandleRequest is a method of the FetchHandler that handles GET requests.
 func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 
+	size := 10
+	var respLen int
 	var err error
 	defer func(startTime time.Time) {
 		if ph.metric != nil {
 			ph.metric.SentMetrics(map[string]interface{}{
-				"func":  fmt.Sprintf("FetchHandler.HandleRequest_%v", ph.name),
-				"took":  time.Since(startTime).Seconds(),
-				"isErr": strconv.FormatBool(err != nil),
+				"func":    fmt.Sprintf("FetchHandler.HandleRequest_%v", ph.name),
+				"took":    time.Since(startTime).Seconds(),
+				"isErr":   strconv.FormatBool(err != nil),
+				"sizeReq": size,
+				"resp":    respLen,
 			})
 		}
 	}(time.Now())
@@ -81,7 +85,6 @@ func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	if author != "" {
 		qArr = append(qArr, es.ConstructAuthorQuery(author))
 	}
-	size := 10
 	szStr := queryParams.Get("size")
 	if szStr != "" {
 		szInt, _ := strconv.Atoi(szStr)
@@ -107,6 +110,7 @@ func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 		Docs:   docs,
 		Length: len(docs),
 	}
+	respLen = len(docs)
 
 	// Marshal the response struct to JSON
 	responseJSON, err := json.Marshal(response)

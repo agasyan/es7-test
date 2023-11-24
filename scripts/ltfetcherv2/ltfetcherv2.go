@@ -123,9 +123,9 @@ func runAttack(targeter vegeta.Targeter, rate vegeta.Rate, duration time.Duratio
 }
 
 func main() {
-	f := 10
+	f := 50
 	timeSec := 1
-	durSec := 300
+	durSec := 600
 	rate := vegeta.Rate{Freq: f, Per: time.Duration(timeSec) * time.Second}
 	duration := time.Duration(durSec) * time.Second
 

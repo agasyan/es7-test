@@ -5,13 +5,25 @@
         "id": {
           "type": "keyword"
         },
-        "title": {
+        "product_title": {
           "type": "text"
         },
-        "author": {
-          "type": "text"
+        "item_id": {
+          "type": "keyword"
         },
-        "genre": {
+        "created_unix": {
+          "type": "long"
+        },
+        "created_week": {
+          "type": "keyword"
+        },
+        "category_id": {
+          "type": "long"
+        },
+        "category_name": {
+          "type": "keyword"
+        },
+        "product_condition": {
           "type": "keyword"
         },
         "width_image": {
@@ -22,12 +34,78 @@
         },
         "image": {
           "type": "keyword",
-          "index": "false"
-        },
-        "created_unix": {
-          "type": "long"
+          "index": false
         },
         "price": {
+          "type": "integer"
+        },
+        "final_price": {
+          "type": "double"
+        },
+        "discount_percentage": {
+          "type": "double"
+        },
+        "score_doc": {
+          "type": "double"
+        },
+        "ctr": {
+          "type": "double"
+        },
+        "price_bid": {
+          "type": "integer"
+        },
+        "is_cashback": {
+          "type": "boolean"
+        },
+        "is_freeshipping": {
+          "type": "boolean"
+        },
+        "is_local": {
+          "type": "boolean"
+        },
+        "minimum_order": {
+          "type": "integer"
+        },
+        "province_id": {
+          "type": "integer"
+        },
+        "province_name": {
+          "type": "keyword"
+        },
+        "city_id": {
+          "type": "integer"
+        },
+        "city_name": {
+          "type": "keyword"
+        },
+        "district_id": {
+          "type": "integer"
+        },
+        "district_name": {
+          "type": "keyword"
+        },
+        "lat": {
+          "type": "float"
+        },
+        "long": {
+          "type": "float"
+        },
+        "shop_name": {
+          "type": "keyword"
+        },
+        "shop_id": {
+          "type": "long"
+        },
+        "shop_tier": {
+          "type": "integer"
+        },
+        "rating": {
+          "type": "float"
+        },
+        "review": {
+          "type": "integer"
+        },
+        "weight_gram": {
           "type": "integer"
         }
       }

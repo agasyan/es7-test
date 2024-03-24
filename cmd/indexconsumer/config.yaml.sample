@@ -1,0 +1,34 @@
+server:
+  port: 8081
+  env:  <<FILL>>
+  app_name: "indexconsumer"
+
+nr:
+  license_key:  <<FILL>>
+  acc_id: <<FILL>>
+  buffer_time_ms: 500
+  buffer_size: 100
+
+es:
+  vm: 
+    host: "http://localhost:9210"
+    index_name: "book"
+  kube: 
+    host: "http://localhost:9200"
+    index_name: "book"
+
+nsq:
+  cvm: 
+    nsqd_address: "localhost:4150"
+    publish_topic: "doc_index"
+    consumer_name: "indexer_book_vm"
+    timeout_ms: 1000
+    num_of_consumers: 10
+    in_flight: 10
+  ckube: 
+    nsqd_address: "localhost:4150"
+    publish_topic: "doc_index"
+    consumer_name: "indexer_book_kube"
+    timeout_ms: 1000
+    num_of_consumers: 10
+    in_flight: 10

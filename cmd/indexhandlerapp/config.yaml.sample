@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  env:  <<FILL>>
+  app_name: "indexapphandler"
+
+nr:
+  license_key:  <<FILL>>
+  acc_id:  <<FILL>>
+  buffer_time_ms: 500
+  buffer_size: 100
+
+nsq:
+  nsqd_address: "localhost:4150"
+  publish_topic: "doc_index"
+
+es:
+  vm: 
+    host: "http://localhost:9210"
+    index_name: "book"
+  kube: 
+    host: "http://localhost:9210"
+    index_name: "book"

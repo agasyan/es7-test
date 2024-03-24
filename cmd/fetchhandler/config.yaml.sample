@@ -1,0 +1,24 @@
+server:
+  port: 8082
+  env: <<FILL>>
+  app_name: "fetchhandler"
+
+nr:
+  license_key: <<FILL>>
+  acc_id:  <<FILL>>
+  buffer_time_ms: 500
+  buffer_size: 100
+
+es:
+  vm: 
+    host: "http://localhost:9210"
+    index_name: "book"
+  kube: 
+    host: "http://localhost:9200"
+    index_name: "book"
+
+handler:
+  vm: 
+    timeout_ms: 3000
+  kube: 
+    timeout_ms: 3000

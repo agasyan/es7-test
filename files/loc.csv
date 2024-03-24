@@ -1,0 +1,53 @@
+101,Central Jakarta,-6.2088,106.8456,1,Jakarta,1,Banten
+102,North Jakarta,-6.1622,106.8163,1,Jakarta,1,Banten
+103,South Jakarta,-6.2615,106.8106,1,Jakarta,1,Banten
+104,East Jakarta,-6.2665,106.8865,1,Jakarta,1,Banten
+105,West Jakarta,-6.2088,106.8456,1,Jakarta,1,Banten
+106,Thousand Islands,-5.8245,106.5135,1,Jakarta,1,Banten
+107,Jakarta Barat,-6.1618,106.7439,1,Jakarta,1,Banten
+108,Jakarta Timur,-6.2297,106.8947,1,Jakarta,1,Banten
+109,Jakarta Selatan,-6.2615,106.8106,1,Jakarta,1,Banten
+110,Jakarta Utara,-6.1622,106.8163,1,Jakarta,1,Banten
+201,Surabaya Utara,-7.2794,112.748,2,Surabaya,2,Jawa Timur
+202,Surabaya Selatan,-7.3313,112.7327,2,Surabaya,2,Jawa Timur
+203,Surabaya Barat,-7.2591,112.7413,2,Surabaya,2,Jawa Timur
+204,Surabaya Timur,-7.2794,112.748,2,Surabaya,2,Jawa Timur
+205,Surabaya Pusat,-7.2588,112.7414,2,Surabaya,2,Jawa Timur
+206,Surabaya Selatan,-7.3313,112.7327,2,Surabaya,2,Jawa Timur
+207,Surabaya Barat Daya,-7.294,112.7034,2,Surabaya,2,Jawa Timur
+208,Surabaya Gunung Anyar,-7.3149,112.7259,2,Surabaya,2,Jawa Timur
+209,Surabaya Lakarsantri,-7.3066,112.7491,2,Surabaya,2,Jawa Timur
+210,Surabaya Sambikerep,-7.2916,112.7467,2,Surabaya,2,Jawa Timur
+301,Bandung Utara,-6.9038,107.6186,3,Bandung,3,Jawa Barat
+302,Bandung Selatan,-7.0526,107.6605,3,Bandung,3,Jawa Barat
+303,Bandung Barat,-6.8235,107.5624,3,Bandung,3,Jawa Barat
+304,Bandung Timur,-6.9345,107.6231,3,Bandung,3,Jawa Barat
+305,Bandung Tengah,-6.9175,107.6191,3,Bandung,3,Jawa Barat
+401,Medan Barat,3.5903,98.6757,4,Medan,4,Sumatera Utara
+402,Medan Timur,3.6015,98.6611,4,Medan,4,Sumatera Utara
+403,Medan Selatan,3.5864,98.6623,4,Medan,4,Sumatera Utara
+404,Medan Utara,3.6052,98.6751,4,Medan,4,Sumatera Utara
+501,Semarang Barat,-6.9847,110.4169,5,Semarang,5,Jawa Tengah
+502,Semarang Timur,-6.9919,110.4262,5,Semarang,5,Jawa Tengah
+503,Semarang Selatan,-7.0364,110.4474,5,Semarang,5,Jawa Tengah
+504,Semarang Utara,-6.9922,110.4262,5,Semarang,5,Jawa Tengah
+601,Makassar Barat,-5.1477,119.4428,6,Makassar,6,Sulawesi Selatan
+602,Makassar Timur,-5.1316,119.4506,6,Makassar,6,Sulawesi Selatan
+603,Makassar Selatan,-5.1428,119.4171,6,Makassar,6,Sulawesi Selatan
+604,Makassar Utara,-5.1321,119.4373,6,Makassar,6,Sulawesi Selatan
+701,Palembang Barat,-2.9814,104.7569,7,Palembang,7,Sumatera Selatan
+702,Palembang Timur,-2.9922,104.7614,7,Palembang,7,Sumatera Selatan
+703,Palembang Selatan,-3.0018,104.7418,7,Palembang,7,Sumatera Selatan
+704,Palembang Utara,-2.971,104.7563,7,Palembang,7,Sumatera Selatan
+801,Depok Barat,-6.3918,106.7673,8,Depok,3,Jawa Barat
+802,Depok Timur,-6.3954,106.8214,8,Depok,3,Jawa Barat
+803,Depok Selatan,-6.4225,106.8141,8,Depok,3,Jawa Barat
+804,Depok Utara,-6.3646,106.8295,8,Depok,3,Jawa Barat
+901,Tangerang Barat,-6.1843,106.6416,9,Tangerang,1,Banten
+902,Tangerang Selatan,-6.2854,106.7121,9,Tangerang,1,Banten
+903,Tangerang Timur,-6.1914,106.7696,9,Tangerang,1,Banten
+904,Tangerang Utara,-6.1787,106.6306,9,Tangerang,1,Banten
+1001,Batam Barat,1.0761,104.026,10,Batam,8,Kepulauan Riau
+1002,Batam Timur,1.1106,104.0407,10,Batam,8,Kepulauan Riau
+1003,Batam Selatan,1.0606,104.0216,10,Batam,8,Kepulauan Riau
+1004,Batam Utara,1.1496,104.0246,10,Batam,8,Kepulauan Riau

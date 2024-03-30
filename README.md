@@ -6,95 +6,7 @@
 Index name for local is `book`
 
 ## Sample config
-indexconsumer
-```
-server:
-  port: 8081
-  env: "development"
-  app_name: "indexconsumer"
-
-nr: <CAN BE OMITTED>
-  license_key: <<FILL>>
-  acc_id: <<FILL>>
-  buffer_time_ms: 250
-  buffer_size: 100
-
-es:
-  vm: 
-    host: "http://localhost:9210"
-    index_name: "book"
-  kube: 
-    host: "http://localhost:9210"
-    index_name: "book"
-
-nsq:
-  cvm: 
-    nsqd_address: "localhost:4150"
-    publish_topic: "doc_index"
-    consumer_name: "indexer_book_vm"
-    timeout_ms: 1000
-    num_of_consumers: 50
-    in_flight: 50
-  ckube: 
-    nsqd_address: "localhost:4150"
-    publish_topic: "doc_index"
-    consumer_name: "indexer_book_kube"
-    timeout_ms: 1000
-    num_of_consumers: 50
-    in_flight: 50
-```
-
-
-indexhandlerapp
-```
-server:
-  port: 8080
-  env: "development"
-  app_name: "indexapphandler"
-
-nr: <CAN BE OMITTED>
-  license_key: <<FILL>>
-  acc_id: <<FILL>>
-  buffer_time_ms: 250
-  buffer_size: 100
-
-nsq:
-  nsqd_address: "localhost:4150"
-  publish_topic: "doc_index"
-
-es:
-  vm: 
-    host: "http://localhost:9210"
-    index_name: "book"
-  kube: 
-    host: "http://localhost:9210"
-    index_name: "book"
-```
-
-fetchhandler
-```
-server:
-  port: 8082
-  env: "development"
-  app_name: "fetchhandler"
-
-nr: <CAN BE OMITTED>
-  license_key: <<FILL>>
-  acc_id: <<FILL>>
-  buffer_time_ms: 250
-  buffer_size: 100
-
-es:
-  vm: 
-    host: "http://localhost:9210"
-    index_name: "book"
-  kube: 
-    host: "http://localhost:9210"
-    index_name: "book"
-handler:
-  vm: 
-    timeout_ms: 1000
-```
+Refer to `*.sample` file
 
 sample curl:
 ```
@@ -111,6 +23,17 @@ curl --request POST \
   --data '{
 	"count": 5
 }'
+```
+
+## Sample Command Load test
+Indexer
+```
+
+```
+
+Fetcher
+```
+
 ```
 
 ### Running
@@ -165,7 +88,7 @@ cd es-operator
 
 | Command                                           | Description                                                       |
 | ------------------------------------------------- | ----------------------------------------------------------------- |
-| `kubectl port-forward es-master-0 9200:9200 -n es-operator-demo` | forward minikube |
+| `kubectl port-forward es-master-0 9200:9200 -n es-operator-demo` | forward minikube to localhost |
 | `kubectl -n es-operator-demo get pods` | check pods|
 | `kubectl apply -f docs/elasticsearchdataset-simple.yaml` | apply yaml|
 | `kubectl get deployments -n es-operator-demo` | check deployments|

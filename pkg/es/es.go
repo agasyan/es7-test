@@ -268,7 +268,7 @@ func (ec *ESClient) Query(ctx context.Context, q []interface{}, size int) ([]doc
 		ec.client.Search.WithBody(bytes.NewReader(combinedJSON)),
 		ec.client.Search.WithTrackTotalHits(true),
 		ec.client.Search.WithSize(size),
-		ec.client.Search.WithSort("price:asc"),
+		ec.client.Search.WithSort("score_doc:asc"),
 	)
 	if err != nil {
 		return []docgen.Document{}, err

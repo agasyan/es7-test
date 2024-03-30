@@ -28,12 +28,12 @@ curl --request POST \
 ## Sample Command Load test
 Indexer
 ```
-
+go run ltfetcherv2.go
 ```
 
 Fetcher
 ```
-
+go run ltindexer.go
 ```
 
 ### Running

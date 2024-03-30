@@ -61,8 +61,9 @@ func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	height_min, _ := strconv.Atoi(queryParams.Get("height_min"))
 	height_max, _ := strconv.Atoi(queryParams.Get("height_max"))
 	title := queryParams.Get("title")
-	genre := queryParams.Get("genre")
-	author := queryParams.Get("author")
+	catID, _ := strconv.Atoi(queryParams.Get("cat_id"))
+	fp_min, _ := strconv.Atoi(queryParams.Get("fp_min"))
+	fp_max, _ := strconv.Atoi(queryParams.Get("fp_max"))
 
 	var qArr []interface{}
 
@@ -78,12 +79,12 @@ func (ph *FetchHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 		qArr = append(qArr, es.ConstructTitleQuery(title))
 	}
 
-	if genre != "" {
-		qArr = append(qArr, es.ConstructGenreQuery(genre))
+	if fp_min != 0 && fp_max != 0 {
+		qArr = append(qArr, es.ConstructPriceQuery(fp_min, fp_max))
 	}
 
-	if author != "" {
-		qArr = append(qArr, es.ConstructAuthorQuery(author))
+	if catID != 0 {
+		qArr = append(qArr, es.ConstructCategoryIDQuery(int64(catID)))
 	}
 	szStr := queryParams.Get("size")
 	if szStr != "" {

@@ -135,28 +135,31 @@ func ConstructHeightQuery(min, max int) interface{} {
 	return rangeQuery
 }
 
-func ConstructAuthorQuery(name string) interface{} {
-	q := map[string]interface{}{
-		"match": map[string]interface{}{
-			"author": name,
+func ConstructPriceQuery(min, max int) interface{} {
+	rangeQuery := map[string]interface{}{
+		"range": map[string]interface{}{
+			"final_price": map[string]interface{}{
+				"gte": min,
+				"lt":  max,
+			},
 		},
 	}
-	return q
+	return rangeQuery
 }
 
 func ConstructTitleQuery(t string) interface{} {
 	q := map[string]interface{}{
 		"match": map[string]interface{}{
-			"title": t,
+			"product_title": t,
 		},
 	}
 	return q
 }
 
-func ConstructGenreQuery(t string) interface{} {
+func ConstructCategoryIDQuery(id int64) interface{} {
 	q := map[string]interface{}{
 		"match": map[string]interface{}{
-			"genre": t,
+			"category_id": id,
 		},
 	}
 	return q
@@ -288,7 +291,7 @@ func (ec *ESClient) Query(ctx context.Context, q []interface{}, size int) ([]doc
 				ItemID:           int(source["item_id"].(float64)),
 				CreatedUnix:      int64(source["created_unix"].(float64)),
 				CreatedWeek:      source["created_week"].(string),
-				CategoryID:       source["category_id"].(int64),
+				CategoryID:       int64(source["category_id"].(float64)),
 				CategoryName:     source["category_name"].(string),
 				ProductCondition: int(source["product_condition"].(float64)),
 				WidthImage:       int(source["width_image"].(float64)),
@@ -313,7 +316,7 @@ func (ec *ESClient) Query(ctx context.Context, q []interface{}, size int) ([]doc
 				Latitude:         source["lat"].(float64),
 				Longitude:        source["long"].(float64),
 				ShopName:         source["shop_name"].(string),
-				ShopID:           source["shop_id"].(int64),
+				ShopID:           int64(source["shop_id"].(float64)),
 				ShopTier:         int(source["shop_tier"].(float64)),
 				Rating:           source["rating"].(float64),
 				Review:           int(source["review"].(float64)),

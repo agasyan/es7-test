@@ -55,8 +55,9 @@ type Document struct {
 
 func (d *Docgen) generate() Document {
 	var id int
-	id = gofakeit.IntRange(1, math.MaxInt32)
+	id = gofakeit.IntRange(1, math.MaxInt)
 	d.mutex.Lock()
+	// check until not exists
 	for d.mapID[id] {
 		id = gofakeit.IntRange(1, math.MaxInt)
 	}
@@ -228,7 +229,12 @@ type Shop struct {
 
 func readFromCSVFiles() ([]Product, []Shop) {
 	// Open the CSV file
-	file, err := os.Open("../../files/test.csv")
+	// path, err := os.Getwd()
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+	// fmt.Println(path) // for example /home/user
+	file, err := os.Open("../../files/name.csv")
 	if err != nil {
 		log.Fatalln("Error opening the file:", err)
 	}

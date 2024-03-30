@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/agasyan/es7-test/pkg/docgen"
 	"github.com/brianvoe/gofakeit/v6"
 	vegeta "github.com/tsenart/vegeta/lib"
 )
@@ -54,11 +56,11 @@ func NewCustomTargeter2(baseURL string) vegeta.Targeter {
 	}
 }
 
-func generateRandomUrlArr(count int, baseURL1 string, baseURL2 string) ([]string, []string) {
+func generateRandomUrlArr(count int, baseURL1 string, baseURL2 string, d *docgen.Docgen) ([]string, []string) {
 	arrUrls1 := make([]string, 0, count)
 	arrUrls2 := make([]string, 0, count)
 	for i := 0; i < count; i++ {
-		randQ := gofakeit.RandomString([]string{"genre", "title", "author", "width", "height"})
+		randQ := gofakeit.RandomString([]string{"price", "title", "catid", "width", "height"})
 		// Create a URL object
 		u1, _ := url.Parse(baseURL1)
 		// Create a URL object
@@ -66,15 +68,19 @@ func generateRandomUrlArr(count int, baseURL1 string, baseURL2 string) ([]string
 
 		q := u1.Query()
 		switch randQ {
-		case "genre":
-			g := gofakeit.BookGenre()
-			q.Add("genre", g)
+		case "price":
+			fp_min := gofakeit.Number(1000, 10000)
+			fp_max := gofakeit.Number(5000000, 10000000)
+			q.Add("fp_min", fmt.Sprint(fp_min))
+			q.Add("fp_max", fmt.Sprint(fp_max))
 		case "title":
-			bt := gofakeit.BookTitle()
-			q.Add("title", bt)
-		case "author":
-			a := gofakeit.FirstName()
-			q.Add("author", a)
+			n := d.GetRandomProduct().Name
+			ptArr := strings.Split(n, " ")
+			t := gofakeit.RandomString(ptArr)
+			q.Add("title", strings.ToLower(t))
+		case "cat_id":
+			a := d.GetRandomProduct().CategoriesID
+			q.Add("cat_id", fmt.Sprint(a))
 		case "width":
 			w_min := gofakeit.Number(200, 600)
 			w_max := gofakeit.Number(600, 2000)
@@ -135,7 +141,8 @@ func main() {
 	u2 := "http://localhost:8082/get/kube"
 
 	log.Println("generating random url")
-	a1, a2 = generateRandomUrlArr((f * timeSec * durSec), u1, u2)
+	d := docgen.Init()
+	a1, a2 = generateRandomUrlArr((f * timeSec * durSec), u1, u2, d)
 	log.Printf("done generating random url len :%v ", len(a1))
 
 	// Create wait group to wait for both attacks to finish

@@ -23,7 +23,8 @@ type PostHandler struct {
 }
 
 type postReq struct {
-	Count int `json:"count"`
+	Count   int  `json:"count"`
+	IsIndex bool `json:"is_index"`
 }
 
 // HandleRequest is a method of the PostHandler that handles POST requests.
@@ -58,8 +59,9 @@ func (ph *PostHandler) HandleRequest(w http.ResponseWriter, r *http.Request) {
 	for _, d := range docs {
 		action := indexconsumer.ActionIndex
 		randAct := gofakeit.RandomString([]string{indexconsumer.ActionIndex, indexconsumer.ActionUpdate, indexconsumer.ActionDelete})
+
 		// to minimize update delete
-		if randAct == indexconsumer.ActionDelete || randAct == indexconsumer.ActionUpdate {
+		if (randAct == indexconsumer.ActionDelete || randAct == indexconsumer.ActionUpdate) && !pr.IsIndex {
 			idToBeUpdated := ph.dg.GetExistKey(randAct)
 			if idToBeUpdated > 0 {
 				action = randAct

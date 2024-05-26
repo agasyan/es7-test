@@ -12,10 +12,10 @@ nr:
 es:
   vm: 
     host: "http://localhost:9210"
-    index_name: "book"
+    index_name: "product"
   kube: 
     host: "http://localhost:9200"
-    index_name: "book"
+    index_name: "product"
 
 handler:
   vm: 

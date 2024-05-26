@@ -104,6 +104,8 @@ kubectl apply -f docs/zalando.org_elasticsearchdatasets.yaml
 kubectl apply -f docs/zalando.org_elasticsearchmetricsets.yaml
 kubectl apply -f es-operator-prod.yaml
 kubectl -n es-operator-demo get pods
+kubectl -n es-operator-demo get svc es-http
+kubectl get nodes -o wide
 ```
 
 ### Master
@@ -115,7 +117,7 @@ kubectl -n es-operator-demo port-forward $MASTER_POD 9200
 
 ### Data
 ```
-kubectl apply -f docs/es-data-prod.yaml
+kubectl apply -f es-data-prod.yaml
 kubectl -n es-operator-demo get eds
 kubectl -n es-operator-demo get sts
 kubectl -n es-operator-demo get pods

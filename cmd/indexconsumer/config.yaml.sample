@@ -12,23 +12,23 @@ nr:
 es:
   vm: 
     host: "http://localhost:9210"
-    index_name: "book"
+    index_name: "product"
   kube: 
     host: "http://localhost:9200"
-    index_name: "book"
+    index_name: "product"
 
 nsq:
   cvm: 
     nsqd_address: "localhost:4150"
     publish_topic: "doc_index"
-    consumer_name: "indexer_book_vm"
+    consumer_name: "indexer_product_vm"
     timeout_ms: 1000
     num_of_consumers: 10
     in_flight: 10
   ckube: 
     nsqd_address: "localhost:4150"
     publish_topic: "doc_index"
-    consumer_name: "indexer_book_kube"
+    consumer_name: "indexer_product_kube"
     timeout_ms: 1000
     num_of_consumers: 10
     in_flight: 10

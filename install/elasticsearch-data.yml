@@ -24,7 +24,7 @@ network.host: 0.0.0.0
 node.name: es-vm-data-1
 node.master: false
 discovery.seed_hosts:
-  - <FILL ME>>
+  - 10.148.0.12
 #
 # Add custom attributes to the node:
 #

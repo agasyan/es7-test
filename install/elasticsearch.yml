@@ -25,7 +25,7 @@ node.name: es-vm-master-1
 node.master: true
 node.data: false
 discovery.seed_hosts:
-  - 178.128.88.41
+  - 35.197.135.160
 cluster.initial_master_nodes:
   - es-vm-master-1
 #

@@ -75,7 +75,7 @@ Kube pointer
 kubectl get nodes
 kubectl config get-contexts
 kubectl config use-context do-sgp1-es7-kube-2
-kubectl config delete-context do-sgp1-es7-kube-2
+kubectl config delete-context gke_lithe-altar-424502-a0_asia-southeast1_es-kube
 ```
 
 ## Kube
@@ -84,14 +84,19 @@ https://github.com/zalando-incubator/es-operator/blob/master/docs/GETTING_STARTE
 
 ### Setup and setup operator
 
-#### Setup service acc
+## GCloud
 
 ```
-kubectl create namespace es-operator-demo
-kubectl create serviceaccount es-operator -n es-operator-demo
-kubectl get serviceaccount es-operator -n es-operator-demo
+gcloud container clusters get-credentials cluster-1 --region asia-southeast1-a --project lithe-altar-424502-a0
 
 ```
+
+Check pod
+```
+kubectl -n es-operator-demo get pods
+kubectl get ns
+```
+
 
 ```
 kubectl apply -f docs/cluster-roles.yaml
@@ -103,7 +108,7 @@ kubectl -n es-operator-demo get pods
 
 ### Master
 ```
-kubectl apply -f docs/es-master-prod.yaml
+kubectl apply -f es-master-prod.yaml
 MASTER_POD=$(kubectl -n es-operator-demo get pods -l application=elasticsearch,role=master -o custom-columns=:metadata.name --no-headers | head -n 1)
 kubectl -n es-operator-demo port-forward $MASTER_POD 9200
 ```
@@ -114,6 +119,15 @@ kubectl apply -f docs/es-data-prod.yaml
 kubectl -n es-operator-demo get eds
 kubectl -n es-operator-demo get sts
 kubectl -n es-operator-demo get pods
+```
+
+#### Setup service acc
+
+```
+kubectl create namespace es-operator-demo
+kubectl create serviceaccount es-operator -n es-operator-demo
+kubectl get serviceaccount es-operator -n es-operator-demo
+
 ```
 
 

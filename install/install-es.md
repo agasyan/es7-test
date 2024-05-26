@@ -74,6 +74,8 @@ Kube pointer
 ```
 kubectl get nodes
 kubectl config get-contexts
+kubectl config use-context do-sgp1-es7-kube-2
+kubectl config delete-context do-sgp1-es7-kube-2
 ```
 
 ## Kube

@@ -51,10 +51,10 @@ spec:
       - name: elasticsearch
         resources:
           requests:
-            memory: 3Gi
-            cpu: 2
+            memory: 2Gi
+            cpu: 1500m
           limits:
-            memory: 4Gi
+            memory: 3Gi
         image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.7.1"
         env:
         - name: "node.name"

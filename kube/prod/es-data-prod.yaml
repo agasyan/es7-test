@@ -51,7 +51,7 @@ spec:
             memory: 3Gi
           requests:
             memory: 2Gi
-            cpu: 1500m
+            cpu: 1
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data

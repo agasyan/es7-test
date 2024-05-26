@@ -77,7 +77,7 @@ func (h *IndexerHandler) HandleMessage(msg *nsq.Message) error {
 	}
 	if err != nil {
 		log.Println("Error es doc:", err)
-		msg.Requeue(-1)
+		msg.RequeueWithoutBackoff(-1)
 		return err
 	}
 

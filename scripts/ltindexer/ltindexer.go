@@ -38,13 +38,16 @@ func NewCustomTargeter(IsIndexOnly bool, count int) vegeta.Targeter {
 
 func main() {
 	// lt 40 bau 20
-	rate := vegeta.Rate{Freq: 5, Per: 1 * time.Second}
-	IsIndexOnly := true
+	f := 50
+	timeSec := 1
+	durSec := 600
+	rate := vegeta.Rate{Freq: f, Per: time.Duration(timeSec) * time.Second}
+	IsIndexOnly := false
 	count := 1
-	duration := 600 * time.Second
+	duration := time.Duration(durSec) * time.Second
 	targeter := NewCustomTargeter(IsIndexOnly, count)
 	attacker := vegeta.NewAttacker()
-	log.Printf("Starting Load Test for, %v\n", duration.Seconds())
+	log.Printf("Starting Load Test for, %v, with freq:%v per timeInSec:%v\n", duration.Seconds(), f, timeSec)
 	var metrics vegeta.Metrics
 	for res := range attacker.Attack(targeter, rate, duration, "Load Test") {
 		metrics.Add(res)

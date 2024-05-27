@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	vegeta "github.com/tsenart/vegeta/lib"
@@ -43,6 +44,7 @@ func main() {
 	duration := 600 * time.Second
 	targeter := NewCustomTargeter(IsIndexOnly, count)
 	attacker := vegeta.NewAttacker()
+	log.Printf("Starting Load Test for, %v\n", duration.Seconds())
 	var metrics vegeta.Metrics
 	for res := range attacker.Attack(targeter, rate, duration, "Load Test") {
 		metrics.Add(res)

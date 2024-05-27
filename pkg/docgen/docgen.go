@@ -68,7 +68,7 @@ func (d *Docgen) generate() Document {
 	cAt := gofakeit.DateRange(time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC), time.Now())
 	y, m := cAt.ISOWeek()
 	p := d.GetRandomProduct()
-	s := d.arrShops[gofakeit.IntRange(0, len(d.arrShops))]
+	s := d.arrShops[gofakeit.IntRange(0, len(d.arrShops)-1)]
 	price := gofakeit.Number(1000, 10000000)
 	disc := gofakeit.IntRange(0, 90)
 	fp := float64(price) * float64(100-disc) / 100

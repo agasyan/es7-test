@@ -22,13 +22,13 @@ nsq:
     nsqd_address: "localhost:4150"
     publish_topic: "doc_index"
     consumer_name: "indexer_product_vm"
-    timeout_ms: 1000
-    num_of_consumers: 10
-    in_flight: 10
+    timeout_ms: 3000
+    num_of_consumers: 3
+    in_flight: 2
   ckube: 
     nsqd_address: "localhost:4150"
     publish_topic: "doc_index"
     consumer_name: "indexer_product_kube"
-    timeout_ms: 1000
-    num_of_consumers: 10
-    in_flight: 10
+    timeout_ms: 3000
+    num_of_consumers: 3
+    in_flight: 2

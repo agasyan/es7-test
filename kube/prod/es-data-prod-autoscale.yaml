@@ -1,0 +1,94 @@
+apiVersion: zalando.org/v1
+kind: ElasticsearchDataSet
+metadata:
+  labels:
+    application: elasticsearch
+    role: data
+    group: simple
+  name: es-data-simple
+  namespace: es-operator-demo
+spec:
+  replicas: 2
+  scaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 3
+    minShardsPerNode: 2
+    maxShardsPerNode: 2
+    minIndexReplicas: 1
+    maxIndexReplicas: 2
+    scaleUpCPUBoundary: 10
+    scaleUpThresholdDurationSeconds: 120
+    scaleUpCooldownSeconds: 600
+    scaleDownCPUBoundary: 5
+    scaleDownThresholdDurationSeconds: 120
+    scaleDownCooldownSeconds: 600
+  template:
+    metadata:
+      labels:
+        application: elasticsearch
+        role: data
+        group: simple
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: elasticsearch
+        env:
+        - name: "node.name"
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: "node.attr.group"
+          value: "simple"
+        - name: "node.master"
+          value: "false"
+        - name: "node.data"
+          value: "true"
+        image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.7.1"
+        ports:
+        - containerPort: 9300
+          name: transport
+        readinessProbe:
+          httpGet:
+            path: /_cat/master
+            port: 9200
+          timeoutSeconds: 10
+        resources:
+          limits:
+            memory: 3Gi
+          requests:
+            memory: 2Gi
+            cpu: 2
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
+        - name: elasticsearch-config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          subPath: elasticsearch.yml
+      initContainers:
+      - command:
+        - sysctl
+        - -w
+        - vm.max_map_count=262144
+        image: busybox:1.30
+        name: init-sysctl
+        resources:
+          limits:
+            cpu: 50m
+            memory: 50Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        securityContext:
+          runAsUser: 0
+          privileged: true
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: elasticsearch-config
+        configMap:
+          name: es-config
+          items:
+          - key: elasticsearch.yml
+            path: elasticsearch.yml

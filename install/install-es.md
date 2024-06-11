@@ -57,27 +57,6 @@ cluster.initial_master_nodes:
 
 # Kube
 
-## doctl
-https://docs.digitalocean.com/reference/doctl/how-to/install/
-
-For ctl and connect between kubectl and doctl
-
-```
-sudo snap install doctl
-doctl auth init --context agas-main
-doctl auth list
-doctl auth switch --context agas-main
-```
-
-
-Kube pointer
-```
-kubectl get nodes
-kubectl config get-contexts
-kubectl config use-context do-sgp1-es7-kube-2
-kubectl config delete-context gke_lithe-altar-424502-a0_asia-southeast1_es-kube
-```
-
 ## Kube
 https://github.com/zalando-incubator/es-operator
 https://github.com/zalando-incubator/es-operator/blob/master/docs/GETTING_STARTED.md
@@ -87,8 +66,7 @@ https://github.com/zalando-incubator/es-operator/blob/master/docs/GETTING_STARTE
 ## GCloud
 
 ```
-gcloud container clusters get-credentials cluster-1 --region asia-southeast1-a --project lithe-altar-424502-a0
-
+gcloud container clusters get-credentials es-cluster-1 --zone asia-southeast1-a --project lithe-altar-424502-a0
 ```
 
 Check pod
@@ -97,6 +75,7 @@ kubectl -n es-operator-demo get pods
 kubectl get ns
 ```
 
+`git clone https://github.com/agasyan/es7-test.git`
 
 ```
 kubectl apply -f docs/cluster-roles.yaml
@@ -111,6 +90,10 @@ kubectl get nodes -o wide
 ### Master
 ```
 kubectl apply -f es-master-prod.yaml
+```
+
+For port forward
+```
 MASTER_POD=$(kubectl -n es-operator-demo get pods -l application=elasticsearch,role=master -o custom-columns=:metadata.name --no-headers | head -n 1)
 kubectl -n es-operator-demo port-forward $MASTER_POD 9200
 ```
@@ -153,4 +136,25 @@ Skip UFW If already using do firewall
 ```
 sudo ufw status
 sudo ufw enable
+```
+
+## doctl
+https://docs.digitalocean.com/reference/doctl/how-to/install/
+
+For ctl and connect between kubectl and doctl
+
+```
+sudo snap install doctl
+doctl auth init --context agas-main
+doctl auth list
+doctl auth switch --context agas-main
+```
+
+
+Kube pointer
+```
+kubectl get nodes
+kubectl config get-contexts
+kubectl config use-context do-sgp1-es7-kube-2
+kubectl config delete-context gke_lithe-altar-424502-a0_asia-southeast1_es-kube
 ```
